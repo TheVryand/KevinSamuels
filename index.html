@@ -1,0 +1,530 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>KS Calculator</title>
+    <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/color.css">
+    <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/demo/demo.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="https://www.jeasyui.com/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript">
+		var points = 10*10*10*10*10*10*10;
+		var born_female = 10;
+		//
+		function cb(cid) {
+			var c = $(cid).prop("checked") ? 1 : 0 ;
+			//console.log("CB("+ cid +"): "+ c)
+			return c;
+		};
+		//
+		function KSCalc() {
+			var val = 0;
+			var her = $("#her").val();
+			var him = $("#him").val();
+			var base = ((her * him * born_female)/1);
+			//
+			var fi = cb("#fi1") + cb("#fi2") + cb("#fi3") + cb("#fi4") + cb("#fi5") + cb("#fi6") + cb("#fi7") + cb("#fi8") + cb("#fi9") + cb("#fi0");
+			var fe = cb("#fe1") + cb("#fe2") + cb("#fe3") + cb("#fe4") + cb("#fe5") + cb("#fe6") + cb("#fe7") + cb("#fe8") + cb("#fe9") + cb("#fe0");
+			var fr = cb("#fr1") + cb("#fr2") + cb("#fr3") + cb("#fr4") + cb("#fr5") + cb("#fr6") + cb("#fr7") + cb("#fr8") + cb("#fr9") + cb("#fr0");
+			var co = cb("#co1") + cb("#co2") + cb("#co3") + cb("#co4") + cb("#co5") + cb("#co6") + cb("#co7") + cb("#co8") + cb("#co9") + cb("#co0");
+			var su = cb("#su1") + cb("#su2") + cb("#su3") + cb("#su4") + cb("#su5") + cb("#su6") + cb("#su7") + cb("#su8") + cb("#su9") + cb("#su0");
+			//
+				fi = (fi>1) ? fi : 1;
+				fe = (fe>1) ? fe : 1;
+				fr = (fr>1) ? fr : 1;
+				co = (co>1) ? co : 1;
+				su = (su>1) ? su : 1;
+			//
+				val = base * fi * fe * fr * co * su;
+			const formated = val.toLocaleString("en-US");
+			const level = roundIdd(val/100000);
+			const perce = roundIdd(val/1000000);
+			const score = roundIdd(val/10000000);
+			var text = "<h2>";
+				text += "<div>Value of <strong>"+ formated +"</strong>&nbsp;<em>points</em>:"+ '</div>';
+				text += "<br />";
+				text += "<div title='from 0 to 1000'><strong>"+ level +"</strong>&nbsp;<em>level</em>"+ '</div>';
+				text += "<div title='from 0 to 100'><strong>"+ perce +"</strong>&nbsp;<em>%</em>"+ '</div>';
+				text += "<div title='from 0 to 10'><strong>"+ score +"</strong>&nbsp;<em>score</em>"+ '</div>';
+				text += '</h2>';
+			$("#rv").html(text);
+			$("html, body").animate({ scrollTop: $(document).height() }, 1000 );
+		}
+		function roundIdd(n){
+			return Math.round((n + Number.EPSILON) * 100) / 100;
+		}
+		//
+		function cbAllOn(){
+			$('input:checkbox').not(this).prop('checked', true);
+			$('input:checkbox').each(function() {
+				cbCss(this);
+				event.stopPropagation();
+			});
+		}
+		function cbAllOff(){
+			$('input:checkbox').not(this).prop('checked', false);
+			$('input:checkbox').each(function() {
+				cbCss(this);
+				event.stopPropagation();
+			});
+		}
+		function cbGroup(stt){
+			$('input:checkbox').each(function() {
+				var nm = $(this).prop("id");
+				var ni = nm.indexOf(stt);
+				//console.log(nm +") "+ ni);
+				if(ni===0){
+					var cs = $(this).prop("checked");
+					$(this).prop("checked", !cs);
+					cbCss(this);
+					//event.stopPropagation();
+				}
+			});
+		}
+		function cbCss(cb){
+			var b = $(cb).prop('checked');
+			if(b){
+				$(cb).parent().removeClass();
+				$(cb).parent().addClass('good');
+			}else{
+				$(cb).parent().removeClass();
+				$(cb).parent().addClass('bad');
+			}
+		}
+		function tdClick(td){
+		}
+		//
+$(document).ready(function() {
+	/*
+	$('input:checkbox').click(function() {
+		cbCss(this);
+	});
+	*/
+	$('input:checkbox').change(function() {
+		cbCss(this);
+		event.stopPropagation();
+	});
+	$('td input:checkbox').parent().click(function() {
+		$(this).children().each(function() {
+			var c = $(this).prop('checked');
+			if(c != undefined){
+				$(this).prop('checked', !c);
+				cbCss(this);
+				event.stopPropagation();
+			}
+		});
+	});
+	$('input:checkbox').each(function() {
+		cbCss(this);
+	});
+});
+		//
+    </script>
+    <style>
+	IMG#ks {margin-right: 10px; border-radius: 20px;}
+        .datagrid-filter-row{ display:none !important; }
+		.good {background-color: green;color: #FFF; cursor: pointer;}
+		.bad { background-color: red;color: #FFF; cursor: pointer;}
+		TD.good:before, TD.bad:before, TD.good:after, TD.bad:after {
+			font-size: 18px;
+		}
+		TD.good:before {
+			content: ' \2611 ';
+		}
+		TD.bad:before {
+			content: ' \2612 ';
+		}
+		TD.good:after {
+			content: ' \2618 ';
+			content: '';
+		}
+		TD.bad:after {
+			content: ' \2622 ';
+			content: '';
+		}
+		TD.good {
+			padding-left: 5px;
+			padding-right: 10px;
+			border-left: 2px solid white;
+			clip-path: polygon(0% 0%, 100% 0%, calc(100% - 10px) 50%, 100% 100%, 0% 100%);
+			clip-path: polygon(95% 0%, 100% 50%, 95% 100%, 0% 100%, 0% 0%);
+			animation: wave 1s ease-in-out infinite alternate;
+		}
+		TD.bad {
+			padding-left: 5px;
+			padding-right: 10px;
+			border-left: 2px solid white;
+			clip-path: polygon(0% 0%, 100% 0%, calc(100% - 10px) 50%, 100% 100%, 0% 100%);
+			clip-path: polygon(85% 0%, 100% 50%, 85% 100%, 0% 100%, 0% 0%);
+			animation: wave 1s ease-in-out infinite alternate;
+		}
+		TH.good, TH.bad {
+			background-color: transparent !important;
+			background-image: linear-gradient(to bottom right, transparent 50%, gray 0);
+			cursor: pointer;
+		}
+		TH.what {
+			width: auto;
+			height: auto;
+			background-color: transparent !important;
+			background-image: linear-gradient(to bottom right, transparent 50%, gray 0);
+			background-size: 50% 100%;
+			background-repeat: no-repeat;
+			background-position: left, right;
+		}
+	LABEL {display:inline-block; width:;}
+	TD INPUT {visibility: hidden; width:1px; margin:0px;}
+	TH INPUT#her, TH INPUT#him, DIV INPUT#calc {visibility: visible !important; width:auto; margin:auto; text-align:center !important;}
+	DIV INPUT#calc { width: auto; background-color: black; color: white;}
+	DIV INPUT#calc {background-color: black; color: black !important;}
+	H1 { text-align:center; }
+	H2 { display: table; text-align: center; margin: 0 auto !important; position: 50%;}
+	H2 DIV { display: table-row; width: 100%; text-align: left;}
+	DIV#result { background-color: #CCC; }
+	FORM { padding: 0; margin: 0;}
+	
+	@keyframes wave {
+		0% { top: 5%; }
+		100% { top: -5%; }
+	}
+    </style>
+</head>
+
+<body>
+<h1>KS Calculator</h1>
+<table border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td><img id="ks" alt="Kevin Samuels (RIP)" title="Kevin Samuels (RIP)"
+src="data:image/webp;base64,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" align="left" />
+</td>
+    <td>
+<p>This calculator is based on one teaching of Kevin Samuels (RIP), <em>"A woman needs to be Fit, Feminine, Friendly, Cooperative and Submissive"</em>, to be considered of value <br />
+  (every one of this categories are formed by 10 points for each category)</p>
+<p>This will result from a 0 to a maximum of 100,000,000 points (100%=100M), that then can be devided by a X/Y/Z value to view the result as a 1000, 100% or 10 max score.</p>
+<br />
+<p><strong>Note:</strong> The points listed here are ONLY examples, taken from commun popular opinions in traditional/cultural/social discurse.</p>
+<p><strong>Tip:</strong> If any of these examples are not of importance to you, just replace it by your own point (write it down), but keep it to 10 points by category or just check the box to ignore (redflag).</p>
+<p><strong>Disclaimer:</strong> This calculator does not show a monetary value, this is only a 80 main points system that anyone can base on, any type or sort of measurement levels from their own point of view.</p>
+    </td>
+  </tr>
+</table>
+
+<form onsubmit="return false;">
+<hr style="clear:both;" />
+<table border="0" align="center">
+  <tr>
+    <th width="35%" align="center" bgcolor="#CCCCCC">She rates herself <br />
+      <input type="number" id="her" value="10" size="5" min="1" max="10" class="form-control" /></th>
+    <th width="30%" align="center">&nbsp;</th>
+    <th width="35%" align="center" bgcolor="#CCCCCC">You  rate her <br />
+      <input type="number" id="him" value="10" size="5" min="1" max="10" class="form-control" /></th>
+    </tr>
+  <tr>
+    <td align="center"><table border="0">
+      <tr>
+        <th width="30" scope="col" onclick="cbGroup('fi');"><input type="checkbox" name="fi" id="fi" />
+          &#8693;</th>
+        <th scope="col">FIT</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td class="good"><input type="checkbox" name="fi1" id="fi1" />
+          <label for="fi1">Age under 30-32</label></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td class="good"><input type="checkbox" name="fi2" id="fi2" />
+          <label for="fi2">Is still Fertile</label></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td class="good"><input type="checkbox" name="fi3" id="fi3" />
+          <label for="fi3">Aceptable BMI (Body Mass)</label></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td class="good"><input type="checkbox" name="fi4" id="fi4" />
+          <label for="fi4">Good Personal Higine</label></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td class="good"><input type="checkbox" name="fi5" id="fi5" />
+          <label for="fi5">Not on the Pill or got IUD</label></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td class="good"><input type="checkbox" name="fi6" id="fi6" />
+          <label for="fi6">No past or current STDs</label></td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td class="good"><input type="checkbox" name="fi7" id="fi7" />
+          <label for="fi7">Not Sick (Degenerative)</label></td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td class="good"><input type="checkbox" name="fi8" id="fi8" />
+          <label for="fi8">Not on Psychiatric Medication</label></td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td class="good"><input type="checkbox" name="fi9" id="fi9" />
+          <label for="fi9">Not a Drinker/Smoker </label></td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td class="good"><input type="checkbox" name="fi0" id="fi0" />
+          <label for="fi0">Never done Iligal Drugs</label></td>
+      </tr>
+    </table></td>
+    <td rowspan="3" align="center"><table border="0">
+      <tr>
+        <th width="30" scope="col" onclick="cbGroup('fe');"><input type="checkbox" name="fe" id="fe" value="" />
+          &#8693;</th>
+        <th scope="col">FEMENINE</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td class="good"><input type="checkbox" name="fe1" id="fe1" />
+          <label for="fe1">Still a Virgin</label></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td class="good"><input type="checkbox" name="fe2" id="fe2" />
+          <label for="fe2">Body Count under 5</label></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td class="good"><input type="checkbox" name="fe3" id="fe3" />
+          <label for="fe3">Dresses Modestly</label></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td class="good"><input type="checkbox" name="fe4" id="fe4" />
+          <label for="fe4">Normal Hair Color</label></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td class="good"><input type="checkbox" name="fe5" id="fe5" />
+          <label for="fe5">No Visible Tattos </label></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td class="good"><input type="checkbox" name="fe6" id="fe6" />
+          <label for="fe6">No Extra Peersings</label></td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td class="good"><input type="checkbox" name="fe7" id="fe7" />
+          <label for="fe7">Never done Sex Work</label></td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td class="good"><input type="checkbox" name="fe8" id="fe8" />
+          <label for="fe8">Wants to have Kids</label></td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td class="good"><input type="checkbox" name="fe9" id="fe9" />
+          <label for="fe9"> Have Family Values</label></td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td class="good"><input type="checkbox" name="fe0" id="fe0" />
+          <label for="fe0">Cooks and Cleans</label></td>
+      </tr>
+    </table></td>
+    <td align="center"><table border="0">
+      <tr>
+        <th width="30" scope="col" onclick="cbGroup('fr');"><input type="checkbox" name="fr" id="fr" value="" />
+          &#8693;</th>
+        <th scope="col">FRIENDLY</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td class="good"><input type="checkbox" name="fr1" id="fr1" />
+          <label for="fr1">Not a Social Media Addict</label></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td class="good"><input type="checkbox" name="fr2" id="fr2" />
+          <label for="fr2">Not a Phone Addict</label></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td class="good"><input type="checkbox" name="fr3" id="fr3" />
+          <label for="fr3">Not Provocative or Flirts outside</label></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td class="good"><input type="checkbox" name="fr4" id="fr4" />
+          <label for="fr4">Not Rude &amp; is Polite</label></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td class="good"><input type="checkbox" name="fr5" id="fr5" />
+          <label for="fr5">No Foul Language</label></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td class="good"><input type="checkbox" name="fr6" id="fr6" />
+          <label for="fr6"> Does not play Mental Games</label></td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td class="good"><input type="checkbox" name="fr7" id="fr7" />
+          <label for="fr7">Still got Childhood Friends</label></td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td class="good"><input type="checkbox" name="fr8" id="fr8" />
+          <label for="fr8">Does have a Loyal Friend Group</label></td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td class="good"><input type="checkbox" name="fr9" id="fr9" />
+          <label for="fr9">Does have Married Friends</label></td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td class="good"><input type="checkbox" name="fr0" id="fr0" />
+          <label for="fr0"> Marriage Minded</label></td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td align="center"><hr /></td>
+    <td align="center"><hr /></td>
+  </tr>
+  <tr>
+    <td align="center"><table border="0">
+      <tr>
+        <th width="30" scope="col" onclick="cbGroup('co');"><input type="checkbox" name="co" id="co" value="" />
+          &#8693;</th>
+        <th scope="col">COOPERATIVE</th>
+        </tr>
+      <tr>
+        <td>1</td>
+        <td class="good"><input type="checkbox" name="co1" id="co1" />
+          <label for="co1"> Raised with Father in her life</label></td>
+        </tr>
+      <tr>
+        <td>2</td>
+        <td class="good"><input type="checkbox" name="co2" id="co2" />
+          <label for="co2"> Is Single and not Divorced</label></td>
+        </tr>
+      <tr>
+        <td>3</td>
+        <td class="good"><input type="checkbox" name="co3" id="co3" />
+          <label for="co3"> Does not have Kids</label></td>
+        </tr>
+      <tr>
+        <td>4</td>
+        <td class="good"><input type="checkbox" name="co4" id="co4" />
+          <label for="co4"> No Debt over 1/5 of her Income </label></td>
+        </tr>
+      <tr>
+        <td>5</td>
+        <td class="good"><input type="checkbox" name="co5" id="co5" />
+          <label for="co5"> No Past Trauma from Violence</label></td>
+        </tr>
+      <tr>
+        <td>6</td>
+        <td class="good"><input type="checkbox" name="co6" id="co6" />
+          <label for="co6"> No Escandals (Legal or Criminal)</label></td>
+        </tr>
+      <tr>
+        <td>7</td>
+        <td class="good"><input type="checkbox" name="co7" id="co7" />
+          <label for="co7"> Gratefull to her own Family</label></td>
+        </tr>
+      <tr>
+        <td>8</td>
+        <td class="good"><input type="checkbox" name="co8" id="co8" />
+          <label for="co8">Had a Relationship over a year</label></td>
+        </tr>
+      <tr>
+        <td>9</td>
+        <td class="good"><input type="checkbox" name="co9" id="co9" />
+          <label for="co9"> Not Argumental &amp; is Reasonable</label></td>
+        </tr>
+      <tr>
+        <td>10</td>
+        <td class="good"><input type="checkbox" name="co0" id="co0" />
+          <label for="co0"> Empathetic to others</label></td>
+        </tr>
+    </table></td>
+    <td align="center"><table border="0">
+      <tr>
+        <th width="30" scope="col" onclick="cbGroup('su');"><input type="checkbox" name="su" id="su" value="" />
+          &#8693;</th>
+        <th scope="col">SUBMISSIVE</th>
+        </tr>
+      <tr>
+        <td>1</td>
+        <td class="good"><input type="checkbox" name="su1" id="su1" />
+          <label for="su1"> Not a Feminist</label></td>
+        </tr>
+      <tr>
+        <td>2</td>
+        <td class="good"><input type="checkbox" name="su2" id="su2" />
+          <label for="su2"> Never had a Nose Ring</label></td>
+        </tr>
+      <tr>
+        <td>3</td>
+        <td class="good"><input type="checkbox" name="su3" id="su3" />
+          <label for="su3"> No un-needed Abortions</label></td>
+        </tr>
+      <tr>
+        <td>4</td>
+        <td class="good"><input type="checkbox" name="su4" id="su4" />
+          <label for="su4"> Got a Low Tone of Voice</label></td>
+        </tr>
+      <tr>
+        <td>5</td>
+        <td class="good"><input type="checkbox" name="su5" id="su5" />
+          <label for="su5"> Is Religious/Spiritual</label></td>
+        </tr>
+      <tr>
+        <td>6</td>
+        <td class="good"><input type="checkbox" name="su6" id="su6" />
+          <label for="su6"> Is God/Karma Fearing</label></td>
+        </tr>
+      <tr>
+        <td>7</td>
+        <td class="good"><input type="checkbox" name="su7" id="su7" />
+          <label for="su7"> Respectfull to both Families</label></td>
+        </tr>
+      <tr>
+        <td>8</td>
+        <td class="good"><input type="checkbox" name="su8" id="su8" />
+          <label for="su8"> Never has Cheated</label></td>
+        </tr>
+      <tr>
+        <td>9</td>
+        <td class="good"><input type="checkbox" name="su9" id="su9" />
+          <label for="su9"> Does not have a Toxic-Ex</label></td>
+        </tr>
+      <tr>
+        <td>10</td>
+        <td class="good"><input type="checkbox" name="su0" id="su0" />
+          <label for="su0"> Never had Fuck Boys</label></td>
+        </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td align="center"><hr onclick="cbAllOn();" /></td>
+    <td align="center"><div id="result" align="center">
+      <input type="submit" name="calc" id="calc" value="True Value" onclick="KSCalc();" />
+    </div></td>
+    <td align="center"><hr onclick="cbAllOff();" /></td>
+  </tr>
+</table>
+<br />
+<div id="rv"></div>
+<hr />
+</form>
+</body>
+</html>
